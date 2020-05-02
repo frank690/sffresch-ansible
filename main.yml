@@ -1,0 +1,51 @@
+- name: Update and prepare
+  hosts: hosts
+  become: true
+  remote_user: root
+  roles:
+    - user-setup
+  tags:
+    - user-setup
+
+- name: Configure UFW
+  hosts: hosts
+  become: true
+  remote_user: root
+  roles:
+    - ufw
+  tags:
+    - ufw
+
+- name: Install Ghost and friends
+  hosts: hosts
+  become: true
+  remote_user: root
+  roles:
+    - pip
+    - ghost
+  tags:
+    - ghost
+
+- name: Install pip
+  hosts: hosts
+  become: true
+  remote_user: nerf
+  roles:
+    - pip
+  tags:
+    - pip
+
+#- name: Provision Airflow Hosts
+#  hosts: hosts
+#  remote_user: ubuntu
+#  roles:
+#    - airflow
+#  tags:
+#    - airflow
+
+#- name: Setup users
+#  hosts: all
+#  become: true
+#  remote_user: ubuntu
+#  roles:
+#   - user-setup

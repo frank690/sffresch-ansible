@@ -1,0 +1,17 @@
+state: enabled
+rules:
+  - name: SSH
+    rule: limit
+    port: 22
+    proto: tcp
+    delete: no
+  - name: HTTP
+    rule: allow
+    port: 80
+    proto: tcp
+    delete: no
+  - name: HTTPS
+    rule: allow
+    port: 443
+    proto: tcp
+    delete: no

@@ -1,0 +1,21 @@
+- name: Create user accounts
+  user:
+    system: yes
+    name: "{{ item }}"
+    groups: sudo
+    shell: /bin/bash
+  with_items: "{{ vars.users }}"
+
+- name: Set authorized key taken from file
+  authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  with_items: "{{ vars.users }}"
+
+- name: Allow passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"

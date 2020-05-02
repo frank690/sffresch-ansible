@@ -1,0 +1,57 @@
+- name: Install nginx
+  apt:
+    pkg:
+    - nginx
+
+- name: Adjust ufw settings to nginx
+  ufw:
+    name: 'Nginx Full'
+    rule: allow
+
+- name: Install MySQL
+  apt:
+    pkg:
+      - mysql-server
+
+- name: Make sure PyMySQL is installed
+  pip:
+    name: PyMySQL
+
+- name: Create MySQL config file
+  template:
+    src: .my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    mode: 0600
+  notify: Restart MySQL
+
+- name: Set root on mysql server
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    priv: '*.*:ALL,GRANT'
+    check_implicit_admin: true
+    name: "{{ vars.user }}"
+    password: "{{ vars.password }}"
+    state: present
+  notify: Restart MySQL
+
+- name: Install the gpg key for nodejs LTS
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+
+- name: Install the nodejs LTS repos
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_12.x {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+
+- name: Install the nodejs
+  apt:
+    name: nodejs
+    state: present
+
+- name: Install latest Ghost CLI
+  npm:
+    name: coffee-script
+    path: /app/location
