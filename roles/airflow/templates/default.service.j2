@@ -1,0 +1,18 @@
+[Unit]
+Description=Airflow {{ service }} daemon
+After=network.target postgresql.service mssql.service
+Wants=postgresql.service mssql.service
+
+[Service]
+EnvironmentFile=/etc/environment
+User=ubuntu
+Group=ubuntu
+Type=simple
+ExecStart=/usr/local/bin/airflow {{ service }}
+Restart=always
+RestartSec=5s
+StandardOutput=file:/var/log/airflow-{{ service }}/output.log
+StandardError=file:/var/log/airflow-{{ service }}/error.log
+
+[Install]
+WantedBy=multi-user.target

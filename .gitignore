@@ -1,3 +1,5 @@
 hosts
 .DS_Store
 roles/ghost/content/*
+venv/*
+.idea/*

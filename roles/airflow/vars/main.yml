@@ -1,0 +1,17 @@
+db:
+  host: localhost
+  port: 3306
+  name: airflow_db
+  user: airflow_user
+airflow:
+  cfg:
+    - section: core
+      key: logging_level
+      value: WARN
+    - section: core
+      key: load_examples
+      value: "False"
+    - section: core
+      key: executor
+      value: LocalExecutor
+  path: ~/airflow/airflow.cfg

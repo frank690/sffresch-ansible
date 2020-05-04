@@ -11,6 +11,7 @@ Read the explanation of the different roles below to learn what role should be u
 | pip | Ready | Install pip3 and some packages. |
 | ghost | In Progress | Install [ghost blog](https://ghost.org/) and its requirements.|
 
+
 #### How to run it
 Clone the repo to the environment that ansible should be run from (controlling node).
 Setup configurations (see ansible.cfg and the variables in each vars/main.yml of the roles you want to run/use).

@@ -1,3 +1,7 @@
+- name: Generate passwords on the fly
+  set_fact:
+    ghost_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
+
 - name: Install nginx
   apt:
     pkg:
@@ -30,8 +34,8 @@
     login_unix_socket: /var/run/mysqld/mysqld.sock
     priv: '*.*:ALL,GRANT'
     check_implicit_admin: true
-    name: "{{ vars.user }}"
-    password: "{{ vars.password }}"
+    name: root
+    password: "{{ ghost_password }}"
     state: present
   notify: Restart MySQL
 
@@ -51,7 +55,26 @@
     name: nodejs
     state: present
 
-- name: Install latest Ghost CLI
+- name: Install Ghost-CLI node.js package globally.
   npm:
-    name: coffee-script
-    path: /app/location
+    name: ghost-cli
+    global: yes
+
+- name: Create ghost directory
+  file:
+    name: "{{ vars.ghost.path }}"
+    owner: "{{ vars.ghost.mysql.user }}"
+    group: "{{ vars.ghost.mysql.user }}"
+    state: directory
+    mode: 755
+
+# Install Ghost without the interactive setup
+#- name: Ghost | Install Ghost
+#  shell: ghost install --no-setup
+#  args:
+#    chdir: "{{ vars.ghost.path }}"
+
+#- name: Ghost | Configure & Setup Ghost
+#  shell: "ghost setup --url=https://{{ vars.ghost.domain }} --db=mysql --dbhost=localhost --dbuser={{ vars.ghost.mysql.user }} --dbpass={{ ghost_password }} --dbname=ghost --start"
+#  args:
+#    chdir: "{{ vars.ghost.path }}"

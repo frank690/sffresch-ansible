@@ -16,16 +16,6 @@
   tags:
     - ufw
 
-- name: Install Ghost and friends
-  hosts: hosts
-  become: true
-  remote_user: root
-  roles:
-    - pip
-    - ghost
-  tags:
-    - ghost
-
 - name: Install pip
   hosts: hosts
   become: true
@@ -35,17 +25,20 @@
   tags:
     - pip
 
-#- name: Provision Airflow Hosts
-#  hosts: hosts
-#  remote_user: ubuntu
-#  roles:
-#    - airflow
-#  tags:
-#    - airflow
+- name: Install Ghost and friends
+  hosts: hosts
+  become: true
+  remote_user: sffresch
+  roles:
+    - ghost
+  tags:
+    - ghost
 
-#- name: Setup users
-#  hosts: all
-#  become: true
-#  remote_user: ubuntu
-#  roles:
-#   - user-setup
+- name: Install Airflow
+  hosts: hosts
+  become: true
+  remote_user: root
+  roles:
+    - airflow
+  tags:
+    - airflow

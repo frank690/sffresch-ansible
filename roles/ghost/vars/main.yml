@@ -1,2 +1,5 @@
-user: root
-password: 'YourRootPassword'
+ghost:
+  mysql:
+    user: sffresch
+  domain: sffresch.de
+  path: /var/www/ghost

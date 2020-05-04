@@ -1,0 +1,66 @@
+- name: Generate passwords on the fly
+  set_fact:
+    mysql_user_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
+
+- name: Install airflow prerequirements
+  apt:
+    pkg:
+    - libmysqlclient-dev
+    - libssl-dev
+
+- name: Installing airflow prerequirements (pip packages)
+  pip:
+    name:
+      - jinjasql
+      - apache-airflow[mysql]
+
+- name: Set airflow user on mysql server
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    priv: '*.*:ALL,GRANT'
+    check_implicit_admin: true
+    name: "{{ vars.db.user }}"
+    password: "{{ mysql_user_password }}"
+    state: present
+
+- name: Create new mysql db for airflow
+  mysql_db:
+    name: "{{ vars.db.name }}"
+    login_password: "{{ mysql_user_password }}"
+    login_user: "{{ vars.db.user }}"
+    state: present
+
+- name: Set AIRFLOW_HOME environment (for this session)
+  shell: export AIRFLOW_HOME=~/airflow
+
+- name: Set AIRFLOW_HOME environment (permanently)
+  shell: |
+    echo export AIRFLOW_HOME=~/airflow >> ~/.bashrc
+    echo export AIRFLOW_HOME=~/airflow >> ~/.profile
+
+#- name: First initialization of the Airflow backend DB
+#  shell: airflow initdb
+
+- name: Set Airflow configuration
+  ini_file:
+    create: false
+    state: present
+    path: "{{ vars.airflow.path }}"
+    section: "{{ item.section }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ vars.airflow.cfg }}"
+
+# for some reason we could not build this formated string directly in the ./vars/main.yaml
+- name: Set connection in Airflow configuration
+  ini_file:
+    create: false
+    state: present
+    path: "{{ vars.airflow.path }}"
+    section: core
+    option: sql_alchemy_conn
+    value: "mysql+pymysql://{{ vars.db.user }}:{{ mysql_user_password }}@{{ vars.db.host }}:{{ vars.db.port }}/{{ vars.db.name }}"
+
+# required to initialize the postgres database
+- name: Reinitialize Airflow backend DB
+  shell: airflow upgradedb

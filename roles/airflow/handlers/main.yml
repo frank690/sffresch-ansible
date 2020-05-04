@@ -1,0 +1,30 @@
+- name: restart airflow-webserver
+  become: true
+  systemd:
+    name: airflow-webserver
+    state: restarted
+
+- name: start airflow-webserver
+  become: true
+  systemd:
+    name: airflow-webserver
+    state: started
+    enabled: True
+
+- name: restart airflow-scheduler
+  become: true
+  systemd:
+    name: airflow-scheduler
+    state: restarted
+
+- name: start airflow-scheduler
+  become: true
+  systemd:
+    name: airflow-scheduler
+    state: started
+    enabled: True
+
+- name: reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
