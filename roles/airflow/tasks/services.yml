@@ -1,0 +1,10 @@
+# ------- AIRFLOW SYSTEM LOG CLEANING --------
+- name: Create service file
+  template:
+    src: default.service.j2
+    dest: "/etc/systemd/system/airflow-{{ service }}.service"
+    mode: 0640
+  become: true
+  notify:
+    - reload systemd
+    - "start airflow-{{ service }}"

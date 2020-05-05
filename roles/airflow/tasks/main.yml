@@ -38,8 +38,8 @@
     echo export AIRFLOW_HOME=~/airflow >> ~/.bashrc
     echo export AIRFLOW_HOME=~/airflow >> ~/.profile
 
-#- name: First initialization of the Airflow backend DB
-#  shell: airflow initdb
+- name: First initialization of the Airflow backend DB
+  shell: airflow initdb
 
 - name: Set Airflow configuration
   ini_file:
@@ -64,3 +64,20 @@
 # required to initialize the postgres database
 - name: Reinitialize Airflow backend DB
   shell: airflow upgradedb
+
+- name: Adjust ufw settings for airflow webserver
+  ufw:
+    rule: limit
+    port: 8080
+    proto: tcp
+
+- name: Setup Airflow services
+  include_tasks: services.yml
+  with_items:
+    - webserver
+    - scheduler
+  loop_control:
+    loop_var: service
+
+# TODO: Add [mysqld] timestamp option to remotes /etc/mysql/my.cnf file.
+# TODO: Handler to restart mysql service (and using it!).

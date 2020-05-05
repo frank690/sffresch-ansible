@@ -9,8 +9,8 @@ User=ubuntu
 Group=ubuntu
 Type=simple
 ExecStart=/usr/local/bin/airflow {{ service }}
-Restart=always
-RestartSec=5s
+Restart=on-failure
+RestartSec=1min
 StandardOutput=file:/var/log/airflow-{{ service }}/output.log
 StandardError=file:/var/log/airflow-{{ service }}/error.log
 
