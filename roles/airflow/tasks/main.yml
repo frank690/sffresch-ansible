@@ -23,12 +23,15 @@
     password: "{{ mysql_user_password }}"
     state: present
 
+- name: Add
+
 - name: Create new mysql db for airflow
   mysql_db:
     name: "{{ vars.db.name }}"
     login_password: "{{ mysql_user_password }}"
     login_user: "{{ vars.db.user }}"
     state: present
+  notify: Restart MySQL
 
 - name: Set AIRFLOW_HOME environment (for this session)
   shell: export AIRFLOW_HOME=~/airflow
@@ -80,4 +83,3 @@
     loop_var: service
 
 # TODO: Add [mysqld] timestamp option to remotes /etc/mysql/my.cnf file.
-# TODO: Handler to restart mysql service (and using it!).
