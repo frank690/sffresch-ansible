@@ -23,7 +23,12 @@
     password: "{{ mysql_user_password }}"
     state: present
 
-- name: Add
+- name: Modify MySQL global config file on target machine
+  blockinfile:
+    path: /etc/mysql/my.cnf
+    block: |
+      [mysqld]
+      explicit_defaults_for_timestamp=1
 
 - name: Create new mysql db for airflow
   mysql_db:
@@ -82,4 +87,4 @@
   loop_control:
     loop_var: service
 
-# TODO: Add [mysqld] timestamp option to remotes /etc/mysql/my.cnf file.
+# TODO: add cleanup strategy for airflow logs
