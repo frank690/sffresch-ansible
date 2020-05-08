@@ -14,4 +14,7 @@ airflow:
     - section: core
       key: executor
       value: LocalExecutor
+    - section: core
+      key: load_default_connections
+      value: False
   path: ~/airflow/airflow.cfg

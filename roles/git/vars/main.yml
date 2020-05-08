@@ -1,0 +1,3 @@
+gits:
+  - repo: git@github.com:frank690/motorcycle-collector.git
+    dest: /root/motorcycle-collector
