@@ -25,6 +25,15 @@
   tags:
     - pip
 
+- name: Install git and clone repos
+  hosts: hosts
+  become: true
+  remote_user: root
+  roles:
+    - git
+  tags:
+    - git
+
 - name: Install Ghost and friends
   hosts: hosts
   become: true

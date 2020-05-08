@@ -1,3 +1,8 @@
+- name: Install git
+  apt:
+    pkg:
+      - git
+
 - name: Ensure .ssh directory exists
   file:
     dest: /root/.ssh/
@@ -7,10 +12,18 @@
 
 - name: Install ssh private key
   copy:
-    src: "{{ lookup('file', '/Users/frankeschner/.ssh/id_rsa_sffresch') }}"
+    src: /Users/frankeschner/.ssh/id_rsa_sffresch
     dest: /root/.ssh/id_rsa
     mode: 0600
-    owner: user
+    owner: root
+
+- name: Ensure github.com is a known host
+  lineinfile:
+    dest: /root/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"
 
 - name: Clone desired git repositories
   git:
