@@ -25,10 +25,12 @@
 
 - name: Modify MySQL global config file on target machine
   blockinfile:
-    path: /etc/mysql/my.cnf
+    path: "{{ item }}"
     block: |
       [mysqld]
-      explicit_defaults_for_timestamp=1
+      explicit_defaults_for_timestamp = 1
+  with_items:
+    - /etc/mysql/my.cnf
 
 - name: Create new mysql db for airflow
   mysql_db:
@@ -36,7 +38,12 @@
     login_password: "{{ mysql_user_password }}"
     login_user: "{{ vars.db.user }}"
     state: present
-  notify: Restart MySQL
+
+- name: Restart MySQL service
+  service:
+    name: mysql
+    state: restarted
+    enabled: True
 
 - name: Set AIRFLOW_HOME environment (for this session)
   shell: export AIRFLOW_HOME=~/airflow
@@ -70,13 +77,13 @@
     value: "mysql+pymysql://{{ vars.db.user }}:{{ mysql_user_password }}@{{ vars.db.host }}:{{ vars.db.port }}/{{ vars.db.name }}"
 
 # required to initialize the postgres database
-- name: Reinitialize Airflow backend DB
-  shell: airflow upgradedb
+- name: Second initialization of the Airflow backend DB
+  shell: airflow initdb
 
 - name: Adjust ufw settings for airflow webserver
   ufw:
     rule: limit
-    port: 8080
+    port: "8080"
     proto: tcp
 
 - name: Setup Airflow services
