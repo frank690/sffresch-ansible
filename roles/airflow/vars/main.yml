@@ -10,7 +10,7 @@ airflow:
       value: WARN
     - section: core
       key: load_examples
-      value: "False"
+      value: False
     - section: core
       key: executor
       value: LocalExecutor
