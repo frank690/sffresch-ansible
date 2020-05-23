@@ -1,5 +1,4 @@
 ghost:
-  mysql:
-    user: sffresch
+  user: sffresch
   domain: sffresch.de
   path: /var/www/ghost

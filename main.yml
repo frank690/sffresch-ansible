@@ -34,6 +34,15 @@
   tags:
     - git
 
+- name: Install MySQL server
+  hosts: hosts
+  become: true
+  remote_user: root
+  roles:
+    - mysql
+  tags:
+    - mysql
+
 - name: Install Ghost and friends
   hosts: hosts
   become: true

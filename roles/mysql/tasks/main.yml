@@ -1,0 +1,26 @@
+- name: Install MySQL
+  apt:
+    pkg:
+      - mysql-server
+
+- name: Make sure PyMySQL is installed
+  pip:
+    name: PyMySQL
+
+- name: Create MySQL config file
+  template:
+    src: .my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    mode: 0600
+  notify: Restart MySQL
+
+- name: Set root on mysql server
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    priv: '*.*:ALL,GRANT'
+    check_implicit_admin: true
+    name: root
+    password: "{{ vars.password }}"
+    state: present
+  notify: Restart MySQL
