@@ -1,4 +1,5 @@
 - name: Install nginx
+  become: true
   apt:
     pkg:
     - nginx
@@ -51,8 +52,10 @@
     chdir: "{{ vars.ghost.path }}"
 
 - name: Ghost | Configure & Setup Ghost
-  shell: "ghost setup --url=https://{{ vars.ghost.domain }} --db=mysql --dbhost=localhost --dbuser=root --dbpass=mfaejn3f313GR3r3a --dbname=ghost --start"
+  shell: "ghost setup --url=https://{{ vars.ghost.domain }} --db=mysql --dbhost=localhost --dbuser=root --dbpass=mfaejn3f313GR3r3a --dbname=ghost --sslemail={{ vars.ghost.ssl }} --start"
   args:
     chdir: "{{ vars.ghost.path }}"
 
-# TODO: Setup SSL mail e
+# TODO: Automatically insert injections (head and foot)
+# TODO: Upload custom theme automatically
+# TODO: Upload content automatically

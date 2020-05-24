@@ -2,3 +2,4 @@ ghost:
   user: sffresch
   domain: sffresch.de
   path: /var/www/ghost
+  ssl: frank.eschner@gmx.de
