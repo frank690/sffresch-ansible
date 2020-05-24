@@ -45,7 +45,6 @@
 
 - name: Install Ghost and friends
   hosts: hosts
-  become: true
   remote_user: sffresch
   roles:
     - ghost

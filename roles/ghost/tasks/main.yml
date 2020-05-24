@@ -4,46 +4,55 @@
     - nginx
 
 - name: Adjust ufw settings to nginx
+  become: true
   ufw:
     name: 'Nginx Full'
     rule: allow
 
 - name: Install the gpg key for nodejs LTS
+  become: true
   apt_key:
     url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
     state: present
 
 - name: Install the nodejs LTS repos
+  become: true
   apt_repository:
     repo: "deb https://deb.nodesource.com/node_12.x {{ ansible_distribution_release }} main"
     state: present
     update_cache: yes
 
 - name: Install the nodejs
+  become: true
   apt:
     name: nodejs
     state: present
 
 - name: Install Ghost-CLI node.js package globally.
+  become: true
   npm:
     name: ghost-cli
     global: yes
 
 - name: Create ghost directory
+  become: true
   file:
-    name: "{{ vars.ghost.path }}"
+    path: "{{ vars.ghost.path }}"
     owner: "{{ vars.ghost.user }}"
     group: "{{ vars.ghost.user }}"
     state: directory
-    mode: 775
+    mode: '0775'
 
 # Install Ghost without the interactive setup
-#- name: Ghost | Install Ghost
-#  shell: ghost install --no-setup
-#  args:
-#    chdir: "{{ vars.ghost.path }}"
+- name: Ghost | Install Ghost
+  shell: ghost install --no-setup
+  become_user: "{{ vars.ghost.user }}"
+  args:
+    chdir: "{{ vars.ghost.path }}"
 
-#- name: Ghost | Configure & Setup Ghost
-#  shell: "ghost setup --url=https://{{ vars.ghost.domain }} --db=mysql --dbhost=localhost --dbuser={{ vars.ghost.mysql.user }} --dbpass={{ ghost_password }} --dbname=ghost --start"
-#  args:
-#    chdir: "{{ vars.ghost.path }}"
+- name: Ghost | Configure & Setup Ghost
+  shell: "ghost setup --url=https://{{ vars.ghost.domain }} --db=mysql --dbhost=localhost --dbuser=root --dbpass=mfaejn3f313GR3r3a --dbname=ghost --start"
+  args:
+    chdir: "{{ vars.ghost.path }}"
+
+# TODO: Setup SSL mail e
