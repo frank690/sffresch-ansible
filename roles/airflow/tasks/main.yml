@@ -13,6 +13,7 @@
     name:
       - jinjasql
       - apache-airflow[mysql]
+      - flask_bcrypt
 
 - name: Set airflow user on mysql server
   mysql_user:
@@ -94,5 +95,7 @@
   loop_control:
     loop_var: service
 
+- name: Setup user for airflow webserver authentification
+  script: security_user.py
+
 # TODO: add cleanup strategy for airflow logs
-# TODO: add authentification for airflow webserver

@@ -17,4 +17,10 @@ airflow:
     - section: core
       key: load_default_connections
       value: False
+    - section: webserver
+      key: authenticate
+      value: True
+    - section: webserver
+      key: auth_backend
+      value: airflow.contrib.auth.backends.password_auth
   path: ~/airflow/airflow.cfg
